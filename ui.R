@@ -183,22 +183,6 @@ shinyUI(
                           column(4, plotOutput('mymaps2')), 
                           column(4, plotOutput('mymaps3'))
                           )
-                      )), 
-             tabPanel("Contour Maps Animated", 
-                      fluidPage(
-                        titlePanel("Animations"), 
-                        fluidRow(
-                          column(width = 2, uiOutput('dom')), 
-                          column(width = 2, uiOutput('site')), 
-                          column(width = 2, uiOutput('plot')), 
-                          column(width = 2, uiOutput('specs')), 
-                          column(width = 2, uiOutput('slid'))
-                        ), 
-                        fluidRow(
-                          column(width = 4, uiOutput('anim1')), 
-                          column(width = 4, uiOutput('anim2')), 
-                          column(width = 4, uiOutput('anim3'))
-                        )
                       ))
 ) 
 )

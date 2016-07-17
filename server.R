@@ -14,7 +14,9 @@ library(lubridate)
 library(plotly)
 library(animation)
 
-#### Mammals ####
+options(shiny.fullstacktrace = TRUE)
+
+                                                #### Mammals ####
 data <- list.files(path = "data/mamdata", full.names = T) 
 
 data <- do.call(rbind,lapply(data,read.csv, na.strings=c("","NA", -1, 0)))
