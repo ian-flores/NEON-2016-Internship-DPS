@@ -11,8 +11,8 @@ library(gridExtra)
 library(sp)
 library(reshape2)
 library(lubridate)
-library(plotly)
-library(animation)
+library(spatstat)
+library(SpatialEpi)
 
 options(shiny.fullstacktrace = TRUE)
 
@@ -22,7 +22,7 @@ data <- list.files(path = "data/mamdata", full.names = T)
 data <- do.call(rbind,lapply(data,read.csv, na.strings=c("","NA", -1, 0)))
 
 data1 <- subset(data, select = -c(nlcdClass, geodeticDatum, coordinateUncertainty, 
-                                 elevationUncertainty, individualID, identificationQualifier, 
+                                 elevationUncertainty, identificationQualifier, 
                                  identificationStatus, 
                                  reproductiveCondition, replacedTag, testes, nipples, 
                                  pregnancyStatus, vagina, bloodSampleID,
@@ -63,24 +63,69 @@ shinyServer(
     fun_length <- function(x){
       return(data.frame(y=median(x),label= paste0("N=", length(x))))
     }
+    
+    output$indvar <- renderUI({
+      df <- data 
+      if (is.null(df)) return(NULL)
+      items = names(df)
+      names(items) = items
+      selectInput("indvar", "Choose an independent variable to display", items)
+      
+    })
+    
+    output$depvar <- renderUI({
+      df <- data
+      if (is.null(df)) return(NULL)
+      items = names(df)
+      names(items) = items
+      selectInput("depvar", "Choose a dependent variable to display", items)
+    })
+    
+    output$thirdvar <- renderUI({
+      df <- data
+      if (is.null(df)) return(NULL)
+      items = names(df)
+      names(items) = items
+      selectInput("thirdvar", "Choose if to subset the data based on one of the following variables:", items)
+    })
+    
+    ind <- reactive({
+      paste0("data","$",input$indvar)
+    })
+    
+    dep <- reactive({
+      paste0("data", "$", input$depvar)
+    })
+    thrd <- reactive({
+      paste0("data", "$", thirdvar)
+    })
     plotss <- reactive({
-      x <- switch (input$indvar, 
-                   "Weight" = data$weight, "Total Length" = data$totalLength, 
-                   "Hindfoot Length" = data$hindfootLength, "Ear Length" = data$earLength, 
-                   "Tail Length" = data$tailLength, 
-                   "Sex" = data$sex, "Life Stage" = data$life, "Site" = data$siteID)
-      y <- switch(input$depvar, 
-                  "Weight" = data$weight, "Total Length" = data$totalLength,
-                  "Hindfoot Length" = data$hindfootLength, "Ear Length" = data$earLength, 
-                  "Tail Length" = data$tailLength)
-      z <- switch(input$thirdvar, 
-                  "None" =  NULL, 
-                  "Sex" = data$sex, 
-                  "NEON Domain" = data$domainID,
-                  "Field Site" = data$siteID, 
-                  "Species" = data$scientificName, 
-                  "Life Stage" = data$life, 
-                  "Year" = as.factor(year(as.Date(data$date, "%m/%d/%Y"))))
+      x <- switch (input$indvar,
+                   input$indvar <- ind()
+                     )
+        #            "Weight" = data$weight, "Total Length" = data$totalLength,
+        #            "Hindfoot Length" = data$hindfootLength, "Ear Length" = data$earLength,
+        #            "Tail Length" = data$tailLength,
+        #            "Sex" = data$sex, "Life Stage" = data$life, "Site" = data$siteID
+        # )
+      y <- switch(input$depvar,
+                  input$depvar <- dep()
+                  )
+        # switch(input$depvar, 
+        #           "Weight" = data$weight, "Total Length" = data$totalLength,
+        #           "Hindfoot Length" = data$hindfootLength, "Ear Length" = data$earLength, 
+        #           "Tail Length" = data$tailLength)
+      z <- switch(input$thirdvar,
+                  input$thirdavar <- thrd()
+                  )
+        # switch(input$thirdvar, 
+        #           "None" =  NULL, 
+        #           "Sex" = data$sex, 
+        #           "NEON Domain" = data$domainID,
+        #           "Field Site" = data$siteID, 
+        #           "Species" = data$scientificName, 
+        #           "Life Stage" = data$life, 
+        #           "Year" = as.factor(year(as.Date(data$date, "%m/%d/%Y"))))
       if(input$thirdvar == "None"){
         if(class(x) == "numeric"){
           p <- ggplot(aes(x=x, y=y), data=data) + geom_point() + 
@@ -168,14 +213,7 @@ shinyServer(
       if (is.null(input$plots) || input$plots == "pick one"){return() 
       } else selectizeInput("species", "Species", 
                             c(as.character(data$scientificName[which(data$plotID == input$plots)])), 
-                            multiple = T, options = list(maxItems=3))
-    })
-    
-    output$traps <- renderUI({
-      if (is.null(input$species) || input$species == "pick one"){return()
-        } else radioButtons("traps",
-                            "Decide if to show all traps or just where animals where caught",
-                            c("All Traps" = "all", "Only Caught" = "caught"))
+                            multiple = F, options = list(maxItems=1))
     })
     
     # output$slid <- renderUI({
@@ -184,10 +222,6 @@ shinyServer(
     #                      "Date Animation", 
     #                      min = min(data$date), max= max(data$date))
     # })
-      
-    filename <- reactive({
-      paste0("./maps/", input$plotID)
-    })
     
     mapas <- function(name = " ", plot = "CPER_011"){
       
@@ -210,24 +244,24 @@ shinyServer(
        load(f)
          p <- ggmap(dropit) + 
           stat_density2d(data= data,
-                         aes(x=lng, y=lat, alpha = 0.75, fill=..level..),
+                         aes(x=lng, y=lat, alpha = 0.75, fill=(..level..)),
                          bins=10, geom="polygon", show.legend=F) +
           geom_point(data=tos, aes(x=long, y=lati), color='green') +
           xlab("Longitude") + ylab("Latitude")+
           ggtitle(paste(name)) +  
-          scale_fill_gradient(low = "blue", high = "red")
+          scale_fill_gradient(low = "blue", high = "red") + theme(legend.position="none")
          } else {
       dropit <- get_map(location = c(lon = mlng, lat= mlat),
                         maptype="satellite", zoom=19, force = F)
       save(dropit, file = f)
       p <- ggmap(dropit) + 
         stat_density2d(data= data,
-                       aes(x=lng, y=lat, alpha = 0.75, fill=..level..),
+                       aes(x=lng, y=lat, alpha = 0.75, fill=(..level..)),
                        bins=10, geom="polygon", show.legend=F) +
         geom_point(data=tos, aes(x=long, y=lati), color='green') +
         xlab("Longitude") + ylab("Latitude")+
         ggtitle(paste(name)) +  
-        scale_fill_gradient(low = "blue", high = "red")}
+        scale_fill_gradient(low = "blue", high = "red") + theme(legend.position="none")}
       
       return(p)
       
@@ -245,14 +279,32 @@ shinyServer(
       mapss()
     })
     
-    output$mymaps2 <- renderPlot({
-      mapss()
+    ##### K est ####
+    ripley <- function(name="", plot=""){
+      data <- subset(data, plotID == plot)
+      data <- subset(data, scientificName == name)
+      lat <- as.numeric(data$decimalLatitude)
+      lng <- as.numeric(data$decimalLongitude)
+      data <- cbind(lng, lat)
+      data <- latlong2grid(data)
+      data <- data*100
+      x.range = range(data$x)
+      y.range = range(data$y)
+      data.ppp <- ppp(x= data$x, y= data$y, x.range, y.range) 
+      c <- plot(envelope(data.ppp, Kest), main=name, transform = expression(sqrt(./pi)), 
+       ylab="L(r)", xlab="Radius (m)")
+      return(c)
+    }
+    
+    spat <- reactive({
+      l <- ripley(name = input$species, plot=input$plots)
+      return(l)
+    })
+    output$kest <- renderPlot({
+      spat()
     })
     
-    output$mymaps3 <- renderPlot({
-      mapss()
-    })
-  
+    
 #### Animation ####    
     
     })
