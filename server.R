@@ -31,7 +31,7 @@ data1 <- subset(data, select = -c(nlcdClass, geodeticDatum, coordinateUncertaint
                                  voucherSampleID, measuredBy, recordedBy, remarks, 
                                  consistencyTagIDSexQF, consistencyTagIDLifeStageQF,
                                  consistencyTagIDTaxonIDQF, orderTagIDLifeStageQF, 
-                                 orderTagIDRecaptureQF, fate, taxonID, plotID, uid, taxonRank))
+                                 orderTagIDRecaptureQF, fate, taxonID, trapCoordinate,plotID, uid, taxonRank))
 
 life <- as.factor(data1$lifeStage)
 life <- relevel(life, "subadult")
@@ -46,6 +46,9 @@ trapalphanum <- tos$pointID
 tos <- data.frame(cbind(plotID,decimalLatitude,decimalLongitude, trapalphanum))
 data1 <- cbind(data1, life)
 data <- merge(tos, data1, all=T)
+data1 <- NULL
+data$lifeStage <- NULL
+
 
 shinyServer(
   function(input, output) {
@@ -64,68 +67,74 @@ shinyServer(
       return(data.frame(y=median(x),label= paste0("N=", length(x))))
     }
     
-    output$indvar <- renderUI({
-      df <- data 
-      if (is.null(df)) return(NULL)
-      items = names(df)
-      names(items) = items
-      selectInput("indvar", "Choose an independent variable to display", items)
-      
-    })
+    # output$indvar <- renderUI({
+    #   df <- data 
+    #   if (is.null(df)) return(NULL)
+    #   items = names(df)
+    #   names(items) = items
+    #   selectInput("indvar", "Choose an independent variable to display", items)
+    #   
+    # })
+    # 
+    # output$depvar <- renderUI({
+    #   df <- data
+    #   if (is.null(df)) return(NULL)
+    #   items = names(df)
+    #   names(items) = items
+    #   selectInput("depvar", "Choose a dependent variable to display", items)
+    # })
+    # 
+    # output$thirdvar <- renderUI({
+    #   df <- data
+    #   if (is.null(df)) return(NULL)
+    #   items = names(df)
+    #   names(items) = items
+    #   selectInput("thirdvar", "Choose if to subset the data based on one of the following variables:", items)
+    # })
+    # 
+    # ind <- reactive({
+    #   paste0("data","$",input$indvar)
+    # })
     
-    output$depvar <- renderUI({
-      df <- data
-      if (is.null(df)) return(NULL)
-      items = names(df)
-      names(items) = items
-      selectInput("depvar", "Choose a dependent variable to display", items)
-    })
+    # dep <- reactive({
+      # paste0("data", "$", input$depvar)
+    # })
+    # thrd <- reactive({
+      # paste0("data", "$", thirdvar)
+    # })
     
-    output$thirdvar <- renderUI({
-      df <- data
-      if (is.null(df)) return(NULL)
-      items = names(df)
-      names(items) = items
-      selectInput("thirdvar", "Choose if to subset the data based on one of the following variables:", items)
-    })
-    
-    ind <- reactive({
-      paste0("data","$",input$indvar)
-    })
-    
-    dep <- reactive({
-      paste0("data", "$", input$depvar)
-    })
-    thrd <- reactive({
-      paste0("data", "$", thirdvar)
-    })
     plotss <- reactive({
-      x <- switch (input$indvar,
-                   input$indvar <- ind()
-                     )
-        #            "Weight" = data$weight, "Total Length" = data$totalLength,
-        #            "Hindfoot Length" = data$hindfootLength, "Ear Length" = data$earLength,
-        #            "Tail Length" = data$tailLength,
-        #            "Sex" = data$sex, "Life Stage" = data$life, "Site" = data$siteID
-        # )
+      x <- switch (input$indvar, "Weight" = data$weight, "Total Length" = data$totalLength,
+                   "Hindfoot Length" = data$hindfootLength, "Ear Length" = data$earLength,
+                   "Tail Length" = data$tailLength,
+                   "Sex" = data$sex, "Life Stage" = data$life, "Site" = data$siteID
+      )
+        #input$indvar,
+         #          input$indvar <- ind()
+          #           )
+                   
       y <- switch(input$depvar,
-                  input$depvar <- dep()
-                  )
-        # switch(input$depvar, 
-        #           "Weight" = data$weight, "Total Length" = data$totalLength,
-        #           "Hindfoot Length" = data$hindfootLength, "Ear Length" = data$earLength, 
-        #           "Tail Length" = data$tailLength)
-      z <- switch(input$thirdvar,
-                  input$thirdavar <- thrd()
-                  )
-        # switch(input$thirdvar, 
-        #           "None" =  NULL, 
-        #           "Sex" = data$sex, 
-        #           "NEON Domain" = data$domainID,
-        #           "Field Site" = data$siteID, 
-        #           "Species" = data$scientificName, 
-        #           "Life Stage" = data$life, 
-        #           "Year" = as.factor(year(as.Date(data$date, "%m/%d/%Y"))))
+                  "Weight" = data$weight, "Total Length" = data$totalLength,
+                  "Hindfoot Length" = data$hindfootLength, "Ear Length" = data$earLength,
+                  "Tail Length" = data$tailLength)
+        # switch(
+        # input$depvar,
+                  # input$depvar <- dep()
+                  # )
+        
+      z <- switch(input$thirdvar, 
+                  "None" =  NULL, 
+                  "Sex" = data$sex, 
+                  "NEON Domain" = data$domainID,
+                  "Field Site" = data$siteID, 
+                  "Species" = data$scientificName, 
+                  "Life Stage" = data$life, 
+                  "Year" = as.factor(year(as.Date(data$date, "%m/%d/%Y"))))
+        #switch(input$thirdvar,
+         
+      #         input$thirdavar <- thrd()
+       #           )
+         
       if(input$thirdvar == "None"){
         if(class(x) == "numeric"){
           p <- ggplot(aes(x=x, y=y), data=data) + geom_point() + 
@@ -176,12 +185,11 @@ shinyServer(
     output$mammals <- renderDataTable({
       datatable(data, options = list(
         searching=T, pageLength = 10, lengthMenu =c(5,10,15,20,25,50,100)), 
-        colnames = c("Individual", "Latitude", "Longitude", "Plot ID", "Trap", "Domain", "Site", 
-                     "Trap", 
+        colnames = c("", "Latitude", "Longitude", "Plot ID", "Trap", "Domain", "Site", 
                      "Elevation", 
-                     "Capture Date", "Scientific Name", "Sex", "Recapture", "Life Stage", 
+                     "Capture Date", "EventID","Individual ID","Scientific Name", "Sex", "Recapture", 
                      "HF Length", 
-                     "Ear Length","Tail Length", "Total Length", "Weight")
+                     "Ear Length","Tail Length", "Total Length", "Weight", "Life Stage")
         )})
     
     
@@ -268,6 +276,9 @@ shinyServer(
     }
     
     mapss <- reactive({
+      validate(
+        need(input$species != "", "Please complete all the selections")
+      )
       h <- mapas(name = input$species, plot = input$plots)
       return(h)
     })
@@ -297,6 +308,9 @@ shinyServer(
     }
     
     spat <- reactive({
+      validate(
+        need(input$species != "", "Please complete all the selections")
+      )
       l <- ripley(name = input$species, plot=input$plots)
       return(l)
     })
