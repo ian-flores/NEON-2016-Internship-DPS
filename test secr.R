@@ -24,7 +24,7 @@ plotID <- tos$plotID
 decimalLatitude <- as.numeric(tos$decimalLatitude)
 decimalLongitude <- as.numeric(tos$decimalLongitude)
 trapalphanum <- tos$pointID
-tos <- data.frame(cbind(trapalphanum, plotID,decimalLongitude,decimalLatitude))
+tos <- cbind(trapalphanum, plotID, decimalLongitude, decimalLatitude)
 data1 <- cbind(data1, life)
 data <- merge(tos, data1, all=T)
 
@@ -32,10 +32,10 @@ tos <- subset(tos, plotID=="CPER_011")
 tos$plotID <- NULL
 tos$decimalLatitude <- as.numeric(tos$decimalLatitude)
 tos$decimalLongitude  <- as.numeric(tos$decimalLongitude)
+tos <- data.frame(cbind(trapalphanum, decimalLongitude, decimalLatitude))
 colnames(tos) <- c("Detector", "y", "x")
 
 write.table(tos, "TOSCPER011.txt", row.names = F, quote=F, col.names = F)
-trapss <- read.traps(file = "./TOSCPER011.txt", detector="multi")
 
 
 data <- subset(data, plotID=="CPER_011")
@@ -43,9 +43,9 @@ data <- subset(data, scientificName =="Perognathus flavus")
 
 data$date<- (as.Date(data$date, "%m/%d/%Y"))
 
-Session <- data$eventID
+Session <- event.num
 ID <- data$individualID
-Ocassion <- data$date
+Ocassion <- date.num
 Detector <- data$trapalphanum
 
 data <- cbind(Session, ID, Ocassion, Detector)
@@ -54,9 +54,9 @@ write.table(data, "DATACPER011.txt", row.names=F, quote=F, col.names = F)
 
 
 library("secr")
-CPER <- make.capthist(captures =   "DATACPER011.txt", traps  = "TOSCPER011.txt", fmt = "trapID")
+CPER <- read.capthist("DATACPER011.txt", "TOSCPER011.txt", fmt = "trapID")
 
 plot(CPER)
 
-v <- secr.fit(CPER, model = list(D ~ session, g0~session, sigma ~ 1), buffer=20000)
+v <- secr.fit(CPER, model = list(D ~ session))
 
