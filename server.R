@@ -299,14 +299,16 @@ shinyServer(
       lng <- as.numeric(data$decimalLongitude)
       data <- cbind(lng, lat)
       data <- latlong2grid(data)
-      data <- data*100
+      data <- data*1000
       x.range = range(data$x)
       y.range = range(data$y)
       data.ppp <- ppp(x= data$x, y= data$y, x.range, y.range) 
-      c <- plot(envelope(data.ppp, Kest), main=name, transform = expression(sqrt(./pi)), 
-       ylab="L(r)", xlab="Radius (m)")
+      data.ppp <- unique(data.ppp)
+      c <- plot(envelope(data.ppp, Kest), main=name, 
+                ylab="K(r)", xlab="Radius (m)")
       return(c)
     }
+    
     
     spat <- reactive({
       validate(

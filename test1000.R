@@ -28,7 +28,7 @@ tos <- data.frame(cbind(trapalphanum, plotID, decimalLongitude, decimalLatitude)
 data1 <- cbind(data1, life)
 data <- merge(tos, data1, all=T)
 
-tos <- subset(tos, plotID=="CPER_011")
+tos <- subset(tos, plotID=="STER_026")
 tos$plotID <- NULL
 tos$decimalLatitude <- as.numeric(tos$decimalLatitude)
 tos$decimalLongitude  <- as.numeric(tos$decimalLongitude)
@@ -37,18 +37,16 @@ tos1 <- latlong2grid(tos2)
 tos1 <- tos1*1000
 tos3 <- cbind(tos$trapalphanum, tos1)
 colnames(tos3) <- c("Detector", "y", "x")
-write.table(tos3, "TOSCPER011.txt", row.names = F, quote=F, col.names = F)
+write.table(tos3, "TOSC.txt", row.names = F, quote=F, col.names = F)
 
 
 
 
-data <- subset(data, plotID=="CPER_011")
-data <- subset(data, scientificName =="Perognathus flavus")
+data <- subset(data, plotID=="STER_026")
+data <- subset(data, scientificName =="Peromyscus maniculatus")
 
 library(lubridate)
-data$year <- as.character(year(as.Date(data$date, "%m/%d/%Y")))
-
-data <- subset(data, plotID == "CPER_011")
+data$year <- as.character(year(as.Date(data$date)))#, "%m/%d/%Y")))
 data <- subset(data, year == "2014")
 
 completeFun <- function(data, desiredCols) {
@@ -79,15 +77,20 @@ Detector <- data$trapalphanum
 
 data <- cbind(Session, ID, Ocassion, Detector)
 data <- data[complete.cases(data),]
-write.table(data, "DATACPER011.txt", row.names=F, quote=F, col.names = F)
+write.table(data, "DATA.txt", row.names=F, quote=F, col.names = F)
 
 
 library("secr")
-CPER <- read.capthist("DATACPER011.txt", "TOSCPER011.txt", fmt = "trapID", detector = "multi")
+STER <- read.capthist("DATA.txt", "TOSC.txt", fmt = "trapID", detector = "multi")
 CPER[[2]] <- NULL
-summary(CPER)
-plot(CPER)
+summary(STER)
+plot(STER[[2]])
 CPER
 
-v <- secr.fit(CPER[[6]], model = list(D~1, g0~1, sigma~1), buffer=100)
-v
+v1 <- secr.fit(STER[[1]], model = list(D~1, g0~1, sigma~1), buffer=100)
+v2 <- secr.fit(STER[[2]], model = list(D~1, g0~1, sigma~1), buffer=100)
+v3 <- secr.fit(STER[[3]], model = list(D~1, g0~1, sigma~1), buffer=100)
+
+plot(v)
+a <- predict(v)
+a

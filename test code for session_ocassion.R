@@ -29,6 +29,8 @@ data1 <- cbind(data1, life)
 data <- merge(tos, data1, all=T)
 data1 <- NULL
 data$lifeStage <- NULL
+
+library(lubridate)
 data$year <- as.character(year(as.Date(data$date, "%m/%d/%Y")))
 
 data <- subset(data, plotID == "CPER_011")
@@ -54,6 +56,7 @@ for(i in levels(as.factor(data$eventID))) {
 data$eventID <- factor(data$eventID, labels=1:length(levels(as.factor(data$eventID))))
 data$eventID <- as.numeric(data$eventID)
 date.num <- numeric(length(event.num))
+
 for(i in event.num) {
   date.sub <- data$date[which(event.num == i)]
   date.num[which(event.num == i)] <- factor(date.sub, labels=1:length(levels(as.factor(date.sub))))
