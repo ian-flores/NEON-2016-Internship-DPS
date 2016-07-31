@@ -74,7 +74,7 @@ shinyUI(
                                        strong(" - Small Mammal Community Structure & Composition"), 
                                        br(),
                                        p(" as they relate to climate, productivity, & insect abundance"),
-                                       
+                                        
                                        ##### Background ####
                                        h3("Background Information"),
                                        p("Small mammal field studies have played a key role throughout the history and development of the field of 
