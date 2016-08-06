@@ -23,6 +23,7 @@ library(reshape2)
 library(lubridate)
 library(spatstat)
 library(SpatialEpi)
+#library(gganimate)
 
 options(shiny.fullstacktrace = TRUE)
 
@@ -60,6 +61,8 @@ data1 <- cbind(data1, life)
 data <- merge(tos, data1, all=T)
 data1 <- NULL
 data$lifeStage <- NULL
+data$year <- NULL
+data$year <- year(as.Date(data$date, "%m/%d/%Y"))
 
 
 shinyServer(

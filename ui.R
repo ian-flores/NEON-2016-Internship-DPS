@@ -134,7 +134,6 @@ shinyUI(
                         tabPanel("Mark-Recapture Models")
                                        )),
              tabPanel("Small Mammals Data",
-<<<<<<< HEAD
              tabsetPanel(
              tabPanel("Plots", 
                       fluidPage(
@@ -186,56 +185,6 @@ shinyUI(
 ) 
 )
 ))
-=======
-                      tabsetPanel(
-                        tabPanel("Plots", 
-                                 fluidPage(
-                                   titlePanel("Small Mammals' Data Plots"),
-                                   sidebarLayout(
-                                     sidebarPanel(width=2,
-                                                  helpText("Small Mammals Data"),
-                                                  # uiOutput("indvar"),
-                                                  # uiOutput('depvar'),
-                                                  # uiOutput('thirdvar')
-                                                  selectInput("indvar",
-                                                              label = "Choose an independent variable to display",
-                                                              choices = list("Weight", "Total Length", "Hindfoot Length", "Ear Length",
-                                                                             "Tail Length", "Sex", "Life Stage", "Site"),
-                                                              selected = "Weight"),
-                                                  
-                                                  selectInput("depvar",
-                                                              label = "Choose a dependent variable to display",
-                                                              choices = c("Weight", "Total Length", "Hindfoot Length", "Ear Length",
-                                                                          "Tail Length"),
-                                                              selected = "Total Length"),
-                                                  selectInput("thirdvar",
-                                                              label = "Choose if to subset the data based on one of the following variables:",
-                                                              choices=list("None", "Sex", "NEON Domain", "Field Site", "Species", "Life Stage", "Year"),
-                                                              selected = "None")
-                                     )
-                                     
-                                     ,
-                                     mainPanel(
-                                       plotOutput('scatterPlot'), 
-                                       fluidRow(column(dataTableOutput("mammals"), width=12)))
-                                   ))
-                        ),
-                        tabPanel("Contour Maps",
-                                 fluidPage(
-                                   titlePanel("Spatial Distributions"),
-                                   fluidRow(
-                                     column(width = 2, uiOutput('domains')),
-                                     column(width = 2, uiOutput("sites")),
-                                     column(width = 2, uiOutput("plotID")),
-                                     column(width = 2, uiOutput("species")),
-                                     column(width = 2, uiOutput("slid"))
-                                   ),
-                                   fluidRow(
-                                     column(6, plotOutput('mymaps1')), 
-                                     column(6, plotOutput('kest'))
-                                   )
-                                 ))
-                      ) 
-             )
-                                       ))
->>>>>>> testing
+
+             
+                                       
