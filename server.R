@@ -1,29 +1,11 @@
 #Server 
  
-#x<- installed.packages()
-#if (installed.packages() == x){
-#  install.packages(c("DT", "dplyr", "readr", 
-#                   "ggmap", "ggplot2", "RColorBrewer", 
-#                   "rgdal", "gridExtra", "sp", "reshape2", 
-#                  "lubridate", "spatstat", "SpatialEpi"))
- # } else {NULL}
-
-
-#install.packages
-library(DT)
-library(dplyr)
-library(readr)
-library(ggmap)
-library(ggplot2)
-library(RColorBrewer)
-library(rgdal)
-library(gridExtra)
-library(sp)
-library(reshape2)
-library(lubridate)
-library(spatstat)
-library(SpatialEpi)
-#library(gganimate)
+#check to see if libraries need to be installed
+libs=c("shiny","DT","dplyr","ggplot2","readr","reshape2","ggmap","RColorBrewer",
+       "rgdal","gridExtra","sp", "lubridate", "spatstat", "SpatialEpi", "RSelenium")
+x=sapply(libs,function(x)if(
+  !require(x,character.only = T)) 
+  install.packages(x));rm(x,libs)
 
 options(shiny.fullstacktrace = TRUE)
 
