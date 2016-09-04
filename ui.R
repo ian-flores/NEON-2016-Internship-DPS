@@ -180,7 +180,11 @@ shinyUI(
                           fluidRow(
                           column(6, plotOutput('mymaps1')), 
                           column(6, plotOutput('kest'))
-                          )
+                          ), 
+                        fluidRow(
+                          column(6, plotOutput('mrc1')), 
+                          column(6, plotOutput('pmrc'))
+                        )
                       ))
 ) 
 )

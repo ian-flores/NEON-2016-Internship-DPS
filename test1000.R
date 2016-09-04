@@ -45,9 +45,10 @@ write.table(tos3, "TOSC.txt", row.names = F, quote=F, col.names = F)
 data <- subset(data, plotID=="STER_026")
 data <- subset(data, scientificName =="Peromyscus maniculatus")
 
-library(lubridate)
-data$year <- as.character(year(as.Date(data$date)))#, "%m/%d/%Y")))
-data <- subset(data, year == "2014")
+
+#library(lubridate)
+#data$year <- as.character(year(as.Date(data$date)))#, "%m/%d/%Y")))
+#data <- subset(data, year == "2014")
 
 completeFun <- function(data, desiredCols) {
   completeVec <- complete.cases(data[, desiredCols])
@@ -86,11 +87,12 @@ CPER[[2]] <- NULL
 summary(STER)
 plot(STER[[2]])
 CPER
+vg <- secr.fit(STER, model = list(D~session))
 
 v1 <- secr.fit(STER[[1]], model = list(D~1, g0~1, sigma~1), buffer=100)
 v2 <- secr.fit(STER[[2]], model = list(D~1, g0~1, sigma~1), buffer=100)
 v3 <- secr.fit(STER[[3]], model = list(D~1, g0~1, sigma~1), buffer=100)
 
-plot(v)
-a <- predict(v)
+plot(v2)
+a <- predict(v2)
 a
