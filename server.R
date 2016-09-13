@@ -1,8 +1,8 @@
 #Server 
- 
+ #testing commits
 #check to see if libraries need to be installed
 libs=c("shiny","DT","dplyr","ggplot2","readr","reshape2","ggmap","RColorBrewer",
-       "rgdal","gridExtra","sp", "lubridate", "spatstat", "SpatialEpi", "RSelenium")
+       "rgdal","gridExtra","sp", "lubridate", "spatstat", "SpatialEpi", "RSelenium", "secr")
 x=sapply(libs,function(x)if(
   !require(x,character.only = T)) 
   install.packages(x));rm(x,libs)
@@ -364,7 +364,7 @@ shinyServer(
       data <- subset(data, scientificName == name)
       #data$year <- as.character(year(as.Date(data$date)))#, "%m/%d/%Y")))
       #data <- subset(data, year == '2015')
-      data<- completeFun(data = data, desiredCols = "date")
+      data <- completeFun(data = data, desiredCols = "date")
       
       event.num <- factor(data$eventID, labels=1:length(levels(as.factor(data$eventID))))
       event.num <- as.numeric(event.num)
@@ -375,7 +375,7 @@ shinyServer(
       
       for(i in event.num) {
         date.sub <- data$date[which(event.num == i)]
-        date.num[which(event.num == i)] <- factor(date.sub, labels=1:length(levels(as.factor(date.sub))))
+        date.num[which(event.num == i)] <- factor(date.sub, labels = 1:length(levels(as.factor(date.sub))))
       }
       
       Session <- event.num
@@ -395,12 +395,14 @@ shinyServer(
         rtu <- which.max(tuti)
       }
       v <- secr.fit(STER[[rtu]], model = list(D~1, g0~1, sigma~1), buffer=100)
-      plot(v)
+      #plot(v)
       a <- predict(v)
       return(a)
     }
     
     capture <- reactive({
+      validate(
+        need(input$species != "", "Please complete all the selections"))
       xolo <- mark(plot = input$plots , name = input$species)
       return(xolo)
     })
