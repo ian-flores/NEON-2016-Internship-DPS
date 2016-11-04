@@ -48,7 +48,7 @@ data$year <- year(as.Date(data$date, "%m/%d/%Y"))
 
 
 shinyServer(
-  function(input, output) {
+  function(input, output, session) {
     observe({
       test <<- paste0("http://www.neonscience.org/science-design/field-sites")
     })
