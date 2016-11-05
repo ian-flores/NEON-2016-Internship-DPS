@@ -2,7 +2,7 @@
  #testing commits
 #check to see if libraries need to be installed
 libs=c("shiny","DT","dplyr","ggplot2","readr","reshape2","ggmap","RColorBrewer",
-       "rgdal","gridExtra","sp", "lubridate", "spatstat", "SpatialEpi", "RSelenium", "secr")
+       "rgdal","gridExtra","sp", "lubridate", "spatstat", "SpatialEpi", "RSelenium", "secr", "plotly")
 x=sapply(libs,function(x)if(
   !require(x,character.only = T)) 
   install.packages(x));rm(x,libs)
@@ -174,6 +174,7 @@ shinyServer(
         } } }
       }
       
+      ggplotly(p)
       
     })
     
