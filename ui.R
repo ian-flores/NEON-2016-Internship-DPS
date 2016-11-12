@@ -8,7 +8,7 @@ shinyUI(
                                    titlePanel("Field-Based Organismal Data Application"),
                                    sidebarLayout(
                                      sidebarPanel(width=2,
-                                                  img(src="NEON-Logo.png", height = 50, width=200),
+                                                  img(src="NEON-Logo.png", height = 50, width=150),
                                                   br(),
                                                   br(),
                                                   p("This application uses the National Ecological Observatory Network Data"), 
@@ -23,7 +23,7 @@ shinyUI(
                                        br(), 
                                        br(), 
                                        br(),
-                                       img(src="2016_NEONDomainOverview_0.jpg", height = 550, width=1200)
+                                       img(src="2016_NEONDomainOverview_0.jpg", height = 400, width=800)
                                        )
                                    )
                                  )
@@ -37,7 +37,7 @@ shinyUI(
                                    sidebarLayout(
                                      sidebarPanel(
                                        width=2,
-                                       img(src="NEON-Logo.png", height = 50, width=200),
+                                       img(src="NEON-Logo.png", height = 50, width=150),
                                        br(),
                                        br(), 
                                        p("For more information on the Small Mammals' design you are welcome to visit the following links:"),
