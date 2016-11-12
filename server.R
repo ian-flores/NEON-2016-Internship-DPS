@@ -4,10 +4,10 @@
 libs=c("shiny","DT","dplyr","ggplot2","readr","reshape2","ggmap","RColorBrewer",
        "rgdal","gridExtra","sp", "lubridate", "spatstat", "SpatialEpi", "RSelenium", "secr", "plotly")
 x=sapply(libs,function(x)if(
-  !require(x,character.only = T)) 
+  !require(x,character.only = T))
   install.packages(x));rm(x,libs)
 
-options(shiny.fullstacktrace = TRUE)
+options(shiny.fullstacktrace = F)
 
 # This creates the dataset, all clean, without the unneeded variables & 
 # extracts the spatial information in each file. 
@@ -174,11 +174,12 @@ shinyServer(
         } } }
       }
       
-      ggplotly(p)
+      x <- ggplotly(p)
+      x
       
     })
     
-    output$scatterPlot <- renderPlot({
+    output$scatterPlot <- renderPlotly({
       print(plotss())
     })
     
