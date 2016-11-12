@@ -6,6 +6,7 @@ libs=c("shiny","DT","dplyr","ggplot2","readr","reshape2","ggmap","RColorBrewer",
 x=sapply(libs,function(x)if(
   !require(x,character.only = T)) 
   install.packages(x));rm(x,libs)
+library("ggmap")
 
 options(shiny.fullstacktrace = TRUE)
 
@@ -65,41 +66,6 @@ shinyServer(
     fun_length <- function(x){
       return(data.frame(y=median(x),label= paste0("N=", length(x))))
     }
-    
-    # output$indvar <- renderUI({
-    #   df <- data 
-    #   if (is.null(df)) return(NULL)
-    #   items = names(df)
-    #   names(items) = items
-    #   selectInput("indvar", "Choose an independent variable to display", items)
-    #   
-    # })
-    # 
-    # output$depvar <- renderUI({
-    #   df <- data
-    #   if (is.null(df)) return(NULL)
-    #   items = names(df)
-    #   names(items) = items
-    #   selectInput("depvar", "Choose a dependent variable to display", items)
-    # })
-    # 
-    # output$thirdvar <- renderUI({
-    #   df <- data
-    #   if (is.null(df)) return(NULL)
-    #   items = names(df)
-    #   names(items) = items
-    #   selectInput("thirdvar", "Choose if to subset the data based on one of the following variables:", items)
-    # })
-    # 
-    # ind <- reactive({
-    #   paste0("data","$",input$indvar)
-    # })
-    
-    # dep <- reactive({
-      # paste0("data", "$", input$depvar)
-    # })
-    # thrd <- reactive({
-      # paste0("data", "$", thirdvar)
 
     
     plotss <- reactive({
@@ -116,10 +82,6 @@ shinyServer(
                   "Weight" = data$weight, "Total Length" = data$totalLength,
                   "Hindfoot Length" = data$hindfootLength, "Ear Length" = data$earLength,
                   "Tail Length" = data$tailLength)
-        # switch(
-        # input$depvar,
-                  # input$depvar <- dep()
-                  # )
         
       z <- switch(input$thirdvar, 
                   "None" =  NULL, 
@@ -129,11 +91,7 @@ shinyServer(
                   "Species" = data$scientificName, 
                   "Life Stage" = data$life, 
                   "Year" = as.factor(year(as.Date(data$date, "%m/%d/%Y"))))
-        #switch(input$thirdvar,
-         
-      #         input$thirdavar <- thrd()
-       #           )
-         
+       
       if(input$thirdvar == "None"){
         if(class(x) == "numeric"){
           p <- ggplot(aes(x=x, y=y), data=data) + geom_point() + 
