@@ -1,12 +1,13 @@
 #Server 
  
 #check to see if libraries need to be installed
-libs=c("shiny","DT","dplyr","ggplot2","readr","reshape2","RColorBrewer",
-       "rgdal","gridExtra","sp", "lubridate", "spatstat", "SpatialEpi", "RSelenium", "maps")
-x=sapply(libs,function(x)if(
-  !require(x,character.only = T)) 
-  install.packages(x));rm(x,libs)
-library("ggmap")
+x = c("shiny","DT","dplyr","ggplot2","readr","reshape2","RColorBrewer",
+       "rgdal","gridExtra","sp", "lubridate", "spatstat", "SpatialEpi", 
+       "RSelenium", "maps", "leaflet", "devtools", "nneo", "randomcoloR", "rgdal", "ggmap")
+lapply(x, library, character.only =T)
+#x=sapply(libs,function(x)if(
+ # !require(x,character.only = T)) 
+  #install.packages(x));rm(x,libs)
 
 options(shiny.fullstacktrace = TRUE)
 
@@ -47,20 +48,46 @@ data$lifeStage <- NULL
 data$year <- NULL
 data$year <- year(as.Date(data$date, "%m/%d/%Y"))
 
+neon_sites <- nneo_sites()
+df = data.frame(Lat=neon_sites$siteLatitude, 
+                Long=neon_sites$siteLongitude)
+neon_domains <- readOGR("data/spatial-data/NEON_Domains.shp", 
+                        layer = "NEON_Domains", verbose=F)
+
+tyo <- randomColor(count=22)
+
 
 shinyServer(
   function(input, output, session) {
-    observe({
-      test <<- paste0("http://www.neonscience.org/science-design/field-sites")
+    output$neonmap <- renderLeaflet({
+      leaflet(neon_domains) %>%
+        addPolygons(color=tyo, stroke=F, 
+                    fillOpacity = 0.5, 
+                    smoothFactor = 0.5, group = "Domains")%>%
+        addProviderTiles("Esri.WorldImagery") %>%
+        addMarkers(df$Long, df$Lat, popup= ~as.character(neon_sites$siteDescription), group="Stations")%>%
+        # Layers control
+        addLayersControl(
+          overlayGroups = c("Stations", "Domains"),
+          options = layersControlOptions(collapsed = FALSE))
     })
-    #iframe for a map of neon sites
-    output$neonmap <- renderUI({
-      my_map <- tags$iframe(src=test, 
-                            height=850, 
-                            width=1850)
-      print(my_map)
-      my_map
-    })
+   # getPage <- function(){
+    #  return(includeHTML("www/neon_overview.html"))
+    #}
+    #output$neonmap <- renderUI({getPage()})
+    #############3
+    
+    #observe({
+    #   test <<- paste0("www/neon_overview.html")
+    # })
+    # #iframe for a map of neon sites
+    # output$neonmap <- renderUI({
+    #   my_map <- tags$iframe(src=test, 
+    #                         height=850, 
+    #                         width=1850)
+    #   print(my_map)
+    #   my_map
+    # })
     
     #function to calculate the sample sizes in each of the boxplots
     fun_length <- function(x){
