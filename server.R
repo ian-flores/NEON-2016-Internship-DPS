@@ -71,23 +71,6 @@ shinyServer(
           overlayGroups = c("Stations", "Domains"),
           options = layersControlOptions(collapsed = FALSE))
     })
-   # getPage <- function(){
-    #  return(includeHTML("www/neon_overview.html"))
-    #}
-    #output$neonmap <- renderUI({getPage()})
-    #############3
-    
-    #observe({
-    #   test <<- paste0("www/neon_overview.html")
-    # })
-    # #iframe for a map of neon sites
-    # output$neonmap <- renderUI({
-    #   my_map <- tags$iframe(src=test, 
-    #                         height=850, 
-    #                         width=1850)
-    #   print(my_map)
-    #   my_map
-    # })
     
     #function to calculate the sample sizes in each of the boxplots
     fun_length <- function(x){
@@ -101,9 +84,6 @@ shinyServer(
                    "Tail Length" = data$tailLength,
                    "Sex" = data$sex, "Life Stage" = data$life, "Site" = data$siteID
       )
-        #input$indvar,
-         #          input$indvar <- ind()
-          #           )
                    
       y <- switch(input$depvar,
                   "Weight" = data$weight, "Total Length" = data$totalLength,
@@ -172,11 +152,11 @@ shinyServer(
     output$mammals <- renderDataTable({
       datatable(data, options = list(
         searching=T, pageLength = 10, lengthMenu =c(5,10,15,20,25,50,100))
-        #, 
-        #colnames = c("Latitude", "Longitude", "Plot ID", "Trap", "Domain", "Site", 
-         #            "Elevation", "Capture Date", "EventID","Individual ID","Scientific Name",
-          #           "Sex", "Recapture", "HF Length", 
-           #          "Ear Length","Tail Length", "Total Length", "Weight", "Life Stage")
+        ,
+        colnames = c("Latitude", "Longitude", "Plot ID", "Trap", "Domain", "Site",
+                   "Elevation", "Capture Date", "EventID","Individual ID","Scientific Name",
+                  "Sex", "Recapture", "HF Length",
+                 "Ear Length","Tail Length", "Total Length", "Weight", "Life Stage")
     )})
 
     
@@ -344,36 +324,36 @@ shinyServer(
     #   tos3 <- cbind(tos$trapalphanum, tos1)
     #   colnames(tos3) <- c("Detector", "y", "x")
     #   write.table(tos3, "TOSC.txt", row.names = F, quote=F, col.names = F)
-    #   
+    # 
     #   data <- subset(data, plotID == plot)
     #   data <- subset(data, scientificName == name)
     #   #data$year <- as.character(year(as.Date(data$date)))#, "%m/%d/%Y")))
     #   #data <- subset(data, year == '2015')
     #   data<- completeFun(data = data, desiredCols = "date")
-    #   
+    # 
     #   event.num <- factor(data$eventID, labels=1:length(levels(as.factor(data$eventID))))
     #   event.num <- as.numeric(event.num)
     #   event.num
     #   data$eventID <- factor(data$eventID, labels=1:length(levels(as.factor(data$eventID))))
     #   data$eventID <- as.numeric(data$eventID)
     #   date.num <- numeric(length(event.num))
-    #   
+    # 
     #   for(i in event.num) {
     #     date.sub <- data$date[which(event.num == i)]
     #     date.num[which(event.num == i)] <- factor(date.sub, labels=1:length(levels(as.factor(date.sub))))
     #   }
-    #   
+    # 
     #   Session <- event.num
     #   ID <- data$individualID
     #   Ocassion <- date.num
     #   Detector <- data$trapalphanum
-    #   
+    # 
     #   data <- cbind(Session, ID, Ocassion, Detector)
     #   data <- data[complete.cases(data),]
     #   write.table(data, "DATA.txt", row.names=F, quote=F, col.names = F)
-    #   
+    # 
     #   STER <- read.capthist("DATA.txt", "TOSC.txt", fmt = "trapID", detector = "multi")
-    #   
+    # 
     #   tuti <- NULL
     #   for (i in 1:length(STER)) {
     #     tuti[i] <- summary(STER[[i]])$counts$Total[1]

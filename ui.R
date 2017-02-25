@@ -135,8 +135,8 @@ shinyUI(
                             )
                             )
                             ), 
-             tabPanel("Mark-Recapture Models")
-                            ))
+             tabPanel("Mark-Recapture Models"),
+                            
 tabPanel("Small Mammals Data",
          tabsetPanel(
            tabPanel("Plots", 
@@ -192,7 +192,7 @@ tabPanel("Small Mammals Data",
                     ))
          ) 
 )
-                            
+)                    
 
 
-
+)
