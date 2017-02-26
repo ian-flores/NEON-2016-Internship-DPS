@@ -3,11 +3,11 @@
 #check to see if libraries need to be installed
 x = c("shiny","DT","dplyr","ggplot2","readr","reshape2","RColorBrewer",
        "rgdal","gridExtra","sp", "lubridate", "spatstat", "SpatialEpi", 
-       "RSelenium", "maps", "leaflet", "devtools", "nneo", "randomcoloR", "rgdal", "ggmap")
-lapply(x, library, character.only =T)
-#x=sapply(libs,function(x)if(
- # !require(x,character.only = T)) 
-  #install.packages(x));rm(x,libs)
+       "RSelenium", "maps", "leaflet", "devtools", "nneo", "randomcoloR", "ggmap")
+y=sapply(libs,function(x)if(
+  !library(x,character.only = T)) 
+  install.packages(x));rm(x,libs)
+y
 
 options(shiny.fullstacktrace = TRUE)
 
