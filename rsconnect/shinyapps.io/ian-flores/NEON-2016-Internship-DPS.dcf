@@ -3,8 +3,9 @@ title: NEON-2016-Internship-DPS
 account: ian-flores
 server: shinyapps.io
 appId: 158069
-bundleId: 724724
+bundleId: 728329
 url: https://ian-flores.shinyapps.io/NEON-2016-Internship-DPS/
-when: 1488040968.98756
+when: 1488299825.21616
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: DATACPER011.txt|DATA.txt|index.html|leaflet-draft.R|.RData|README.html|README.md|Rplot.png|sample-apps|TOSCPER011.txt|TOSC.txt|maps/BART_001.rda|maps/BART_007.rda|maps/BART_012.rda|maps/CPER_002.rda|maps/CPER_004.rda|maps/CPER_005.rda|maps/CPER_006.rda|maps/CPER_009.rda|maps/CPER_011.rda|maps/CPER_015.rda|maps/DSNY_001.rda|maps/DSNY_004.rda|maps/DSNY_016.rda|maps/HARV_010.rda|maps/HARV_021.rda|maps/JERC_002.rda|maps/JERC_005.rda|maps/JERC_009.rda|maps/ONAQ_004.rda|maps/ONAQ_005.rda|maps/ONAQ_008.rda|maps/ONAQ_014.rda|maps/SCBI_039.rda|maps/SERC_011.rda|maps/SERC_014.rda|maps/SERC_016.rda|maps/STER_026.rda|maps/STER_027.rda|maps/STER_029.rda|maps/STER_031.rda|maps/TALL_015.rda|maps/UNDE_001.rda|maps/UNDE_003.rda|maps/UNDE_008.rda|maps/UNDE_032.rda|maps/WOOD_001.rda|maps/WOOD_008.rda|testing things/test1000.R|testing things/test code for session_ocassion.R|testing things/test secr.R|testing things/untitled1.R|testing things/untitled2.R|www/2016_NEONDomainOverview_0.jpg|www/Causal-Inference.png|www/Grid-Traps.png|www/NEON-Logo.png

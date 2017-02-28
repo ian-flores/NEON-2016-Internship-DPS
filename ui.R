@@ -134,8 +134,7 @@ shinyUI(
                             )
                             )
                             )
-                            ), 
-             tabPanel("Mark-Recapture Models"),
+                            ),
                             
 tabPanel("Small Mammals Data",
          tabsetPanel(
