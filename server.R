@@ -3,21 +3,15 @@
 #check to see if libraries need to be installed
 library(easypackages)
 my_packages <- c("shiny","DT","dplyr","ggplot2","readr","reshape2","RColorBrewer",
-                 "rgdal","gridExtra","sp", "lubridate", "spatstat", "SpatialEpi", 
-                 "RSelenium", "maps", "leaflet", "devtools", "randomcoloR", "ggmap", 
-                 "ropenscilabs/nneo")
-easypackages::packages(my_packages, prompt=F)
+                 "rgdal","gridExtra","sp", "lubridate", "spatstat", "SpatialEpi",  
+                 "maps", "leaflet", "devtools", "randomcoloR", "ggmap", "nneo")
+
+#easypackages::packages(my_packages, prompt=F)
 libraries(my_packages)
-#libraries(libs)
-#y=sapply(libs,function(x)if(
- # !require(x,character.only = T)) 
-  #install.packages(x));rm(x,libs)
-#y
 
 options(shiny.fullstacktrace = TRUE)
 
-# This creates the dataset, all clean, without the unneeded variables & 
-# extracts the spatial information in each file. 
+# This creates the dataset, all clean, without the unneeded variables & extracts the spatial information in each file. 
 data <- list.files(path = "data/mamdata", full.names = T) 
 
 data <- do.call(rbind,lapply(data,read.csv, na.strings=c("","NA", -1, 0)))
@@ -53,21 +47,18 @@ data$lifeStage <- NULL
 data$year <- NULL
 data$year <- year(as.Date(data$date, "%m/%d/%Y"))
 
-neon_sites <- nneo_sites()
-df = data.frame(Lat=neon_sites$siteLatitude, 
-                Long=neon_sites$siteLongitude)
-neon_domains <- readOGR("data/spatial-data/NEON_Domains.shp", 
-                        layer = "NEON_Domains", verbose=F)
-
-tyo <- randomColor(count=22)
-
-
 shinyServer(
   function(input, output, session) {
+    neon_domains <- readOGR("data/spatial-data/NEON_Domains.shp", 
+                            layer = "NEON_Domains", verbose=F)
+    tyo <- randomColor(count=22)
+    neon_sites <- nneo_sites()
+    
+    
     output$neonmap <- renderLeaflet({
       leaflet(neon_domains) %>%
-        addPolygons(color=tyo, stroke=F, 
-                    fillOpacity = 0.5, 
+        addPolygons(color=tyo, stroke=F,
+                    fillOpacity = 0.5,
                     smoothFactor = 0.5, group = "Domains")%>%
         addProviderTiles("Esri.WorldImagery") %>%
         addMarkers(df$Long, df$Lat, popup= ~as.character(neon_sites$siteDescription), group="Stations")%>%

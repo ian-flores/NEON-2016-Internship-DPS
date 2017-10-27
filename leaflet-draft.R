@@ -1,6 +1,6 @@
 library(leaflet) 
 library(devtools)
-#install_github("ropenscilabs/nneo")
+install_github("ropenscilabs/nneo")
 library(nneo)
 library(randomcoloR)
 library(rgdal)
