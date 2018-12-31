@@ -33,7 +33,7 @@ life <- as.factor(data1$lifeStage)
 life <- relevel(life, "subadult")
 life <- relevel(life, "juvenile")
 options(stringsAsFactors=F)
-tos <- read.csv("TOSpointSpatialData.csv", header=T)
+tos <- read.csv("data/spatial-data/TOSpointSpatialData.csv", header=T)
 tos <- subset(tos, applicableModules=="mam")
 plotID <- tos$plotID
 decimalLatitude <- as.numeric(tos$decimalLatitude)
